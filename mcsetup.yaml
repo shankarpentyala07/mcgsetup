@@ -65,3 +65,11 @@ spec:
     multiCloudGateway:
       dbStorageClassName: ${STORAGE_CLASS}
       reconcileStrategy: standalone
+
+
+For ROSA with STS:
+
+oc exec -it deploy/noobaa-operator -- noobaa-operator -n openshift-storage backingstore create pv-pool noobaa-default-backing-store --num-volumes 1 --pv-size-gb 50
+
+In self-managed:
+noobaa-default-backing-store  is already created.
