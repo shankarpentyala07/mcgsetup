@@ -1,0 +1,67 @@
+1. Create Namespace:
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    openshift.io/cluster-monitoring: "true"
+  name: openshift-storage
+spec: {}
+
+2. Setup Operator Group:
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: openshift-storage-og
+  namespace: openshift-storage
+spec:
+  targetNamespaces:
+  - openshift-storage
+
+3. Install ODF Operator:
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/odf-operator.openshift-storage: ""
+  name: odf-operator
+  namespace: openshift-storage
+spec:
+  channel: stable-4.12
+  installPlanApproval: Automatic
+  name: odf-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+
+
+4. Install ocs-storagecluster:
+apiVersion: ocs.openshift.io/v1
+kind: StorageCluster
+metadata:
+  annotations:
+    cluster.ocs.openshift.io/local-devices: 'true'
+    uninstall.ocs.openshift.io/cleanup-policy: delete
+    uninstall.ocs.openshift.io/mode: graceful
+  name: ocs-storagecluster
+  namespace: openshift-storage
+  finalizers:
+    - storagecluster.ocs.openshift.io
+spec:
+    arbiter: {}
+    encryption:
+      kms: {}
+    externalStorage: {}
+    managedResources:
+      cephBlockPools: {}
+      cephCluster: {}
+      cephConfig: {}
+      cephDashboard: {}
+      cephFilesystems: {}
+      cephNonResilientPools: {}
+      cephObjectStoreUsers: {}
+      cephObjectStores: {}
+      cephToolbox: {}
+    mirroring: {}
+    multiCloudGateway:
+      dbStorageClassName: ${STORAGE_CLASS}
+      reconcileStrategy: standalone
