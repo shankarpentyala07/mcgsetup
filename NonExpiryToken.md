@@ -2,6 +2,7 @@
 Example: `oc create serviceaccount astra-sa-login -n default`
 
 2. Assign cluster-admin role: 
+
 Example:
 ```
 apiVersion: rbac.authorization.k8s.io/v1
@@ -18,6 +19,7 @@ subjects:
   namespace: default`
 ```
 create the above file: `oc apply -f <crb>`
+
 3. Create Service Account token secret:
 
 ```
